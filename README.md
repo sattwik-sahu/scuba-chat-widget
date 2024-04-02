@@ -13,7 +13,7 @@ cd scuba-chat-widget
 
 ### Install `npm` packages
 
-This step assumes you have [https://nodejs.org/en](NodeJS) installed.
+This step assumes you have [NodeJS](https://nodejs.org/en) installed.
 
 ```bash
 npm install
