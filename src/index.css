@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans|Roboto+Slab");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,5 +10,6 @@
 }
 
 body {
-  background: url("/public/bg.jpg");
+  background: url("/public/bg2.jpg");
+  background-size: cover;
 }

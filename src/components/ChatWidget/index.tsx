@@ -115,12 +115,10 @@ const ScubaChatWidget: React.FC<ChatBoxProps> = ({ botName }) => {
             className="bg-white bg-opacity-30 backdrop-blur-md rounded-lg shadow-lg w-[30vw]"
           >
             <div className="flex items-center justify-between px-4 py-2 bg-white bg-opacity-60 text-white rounded-t-md shadow-sm">
-              <h2 className="text-lg font-semibold text-violet-600">
-                {botName}
-              </h2>
+              <h2 className="text-xl font-bold text-violet-600">{botName}</h2>
               <button
                 onClick={toggleChatbox}
-                className="text-violet-800 p-1 hover:bg-black hover:bg-opacity-20 hover:text-white rounded transition-colors duration-300"
+                className="text-violet-800 p-1 hover:bg-black hover:bg-opacity-5 hover:text-gray-600 rounded transition-colors duration-300"
               >
                 <IoChevronDownOutline size={18} />
               </button>
@@ -136,7 +134,7 @@ const ScubaChatWidget: React.FC<ChatBoxProps> = ({ botName }) => {
                   }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className={`py-2 px-3 bg-opacity-75 rounded shadow-sm ${
+                  className={`py-3 px-4 bg-opacity-70 rounded shadow-sm ${
                     message.sender === "user"
                       ? "bg-violet-700 text-gray-100 self-end rounded-tr-none max-w-[80%]"
                       : "bg-gray-300 text-gray-700 self-start rounded-tl-none max-w-[90%]"
@@ -148,14 +146,14 @@ const ScubaChatWidget: React.FC<ChatBoxProps> = ({ botName }) => {
               <div ref={messagesEndRef} />
             </div>
             <form onSubmit={sendMessage}>
-              <div className="relative p-2 bg-white bg-opacity-30 rounded-b">
+              <div className="relative p-2 bg-white bg-opacity-20 rounded-b">
                 <div className="flex items-center">
                   <input
                     type="text"
                     value={userInput}
                     onChange={handleUserInput}
                     placeholder="Type your message..."
-                    className="flex-1 pl-1 pr-2 px-3 rounded-l bg-transparent text-gray-700 focus:outline-none placeholder:text-gray-600"
+                    className="flex-1 pl-1 pr-2 px-3 rounded-l bg-transparent text-gray-700 font-sans focus:outline-none placeholder:text-gray-600"
                   />
                   <motion.button
                     type="submit"

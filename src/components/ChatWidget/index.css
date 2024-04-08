@@ -13,6 +13,10 @@
     .msg_box {
       @apply px-4 py-2 min-h-72 max-h-96 overflow-y-scroll flex flex-col overflow-x-hidden mx-1;
 
+      a {
+        @apply font-semibold text-violet-600 underline hover:text-violet-500 transition-all duration-150;
+      }
+
       &::-webkit-scrollbar {
         @apply w-[6px];
       }
