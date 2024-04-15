@@ -5,11 +5,6 @@
 
 @layer components {
   body {
-    @apply bg-slate-200 w-screen h-screen;
+    @apply bg-transparent w-screen h-screen;
   }
-}
-
-body {
-  background: url("/public/bg2.jpg");
-  background-size: cover;
 }
