@@ -4,7 +4,7 @@ import envCompatible from "vite-plugin-env-compatible";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // TODO Put all allowed origins here
-const allowedOrigins = ["http://localhost:4173", "http://localhost:5173"];
+const allowedOrigins = ["http://localhost:4173", "http://localhost:5173", "http://172.28.133.143:5173"];
 
 export default defineConfig({
   plugins: [react(), envCompatible(), nodePolyfills()],
