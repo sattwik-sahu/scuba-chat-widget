@@ -7,6 +7,11 @@ import ReactMarkdown from "react-markdown";
 
 import "./index.css";
 import axios from "axios";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+    apiKey: "" //OpenAI api key,
+  });
 
 interface Message {
   sender: "user" | "bot";
@@ -17,6 +22,7 @@ type ChatBoxProps = {
   apiKey: string;
   botName: string;
 };
+
 
 const generateResponse = async (url: string, question: string) => {
   const res = await axios.post(
@@ -36,6 +42,43 @@ const generateResponse = async (url: string, question: string) => {
   const { chat_id: chatId, response } = await res.data;
   return { chatId, response };
 };
+
+const generateSemantics = async (query : string) => {
+    const res = await axios.post(
+        "https://api.trieve.ai/api/chunk/search",
+        {
+            "date_bias": true,
+            "query": `${query}`,
+            "search_type": "hybrid",
+            "highlight_results" : true,
+            "use_weights" : true
+        },
+        {
+            headers: {
+                "TR-Organization" : ``, // Trieve Organisation ID,
+                "TR-Dataset": ``, //Trieve Dataset ID
+                "Authorization" : `` // Trieve API Key
+            }
+        }
+    );
+
+    let chunkCount  = 0;
+    let context = "";
+
+    const {score_chunks} = await res.data;
+    score_chunks.sort((a,b) => b.score - a.score);
+
+    for(const chunk  in score_chunks) {
+
+            context += `${score_chunks[chunk].metadata[0].chunk_html} \n\n\n`;
+            chunkCount++;
+
+            if(chunkCount > 5) break;
+    }
+
+    return context
+
+}
 
 const ScubaChatWidget: React.FC<ChatBoxProps> = ({ botName }) => {
   const [showChatbox, setShowChatbox] = useState(false);
@@ -60,17 +103,48 @@ const ScubaChatWidget: React.FC<ChatBoxProps> = ({ botName }) => {
         },
       ]);
       setUserInput("");
-      generateResponse(
-        "https://deciding-seahorse-discrete.ngrok-free.app",
-        userInput.trim()
-      ).then((res): void => {
+      generateSemantics(
+        userInput.trim(),
+      ).then(async(semantics): Promise<void> => { 
+        const query = userInput.trim()
+        const context = semantics
+
+        const response = await openai.chat.completions.create({
+            model : "gpt-3.5-turbo-0125",
+            messages: [
+            {
+              "role": "system",
+              "content":
+                  "You are a helpful AI search assistant for IISER Bhopal(a university) students. Use the following pieces of context to answer the question at the end. If answer isn't in the context, say that you don't know, don't try to make up an answer. ANSWER IN BULLET POINTS!."
+            },
+            {"role": "user", "content": `Context: ${context}}`},
+            {"role": "user", "content": `Question: ${query}`}
+          ],
+           stream : true,
+          max_tokens: 256,
+          temperature: 0.7
+        });
+
         setMessages((messages) => [
-          ...messages,
-          {
-            sender: "bot",
-            text: res.response,
-          },
-        ]);
+            ...messages,
+            {
+              sender: "bot",
+              text: ``,
+            },
+          ]);
+    
+        for await (const chunk of response) {
+            const word = chunk.choices[0]?.delta?.content || ''
+
+            setMessages((messages) => {
+                const lastMessage = messages[messages.length -1];
+                const updatedMessage = {
+                    ...lastMessage,
+                    text : lastMessage.text + word
+                };
+                return [...messages.slice(0, -1), updatedMessage];
+            })            
+          }
         setLoading(false);
       });
     }
